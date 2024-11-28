@@ -9,20 +9,19 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Create from './pages/festivals/Create';
 import Edit from './pages/festivals/Edit'
 import { AuthProvider } from "./utils/useAuth";
-import DoctorsIndex from './pages/doctors/Index';
-import CreateDoctor from './pages/doctors/Create';
-import EditDoctor from './pages/doctors/Edit';
-import ViewDoctor from './pages/doctors/View';
+import Index from './pages/doctors/Index';
+import DoctorEdit from './pages/doctors/Edit';
+import DoctorCreate from "./pages/doctors/Create";
+import SingleDoctor from "./pages/doctors/SingleDoctor";
+import PatientIndex from './pages/patients/Index';
+import PatientEdit from './pages/patients/Edit';
+import PatientCreate from "./pages/patients/Create";
+import SinglePatient from "./pages/patients/SinglePatient";
+import AppointmentIndex from './pages/appointments/Index';
+import AppointmentEdit from './pages/appointments/Edit';
+import AppointmentCreate from "./pages/appointments/Create";
+import SingleAppointment from "./pages/appointments/SingleAppointment";
 
-import PatientsIndex from './pages/patients/Index';
-import CreatePatient from './pages/patients/Create';
-import EditPatient from './pages/patients/Edit';
-import ViewPatient from './pages/patients/View';
-
-import AppointmentsIndex from './pages/appointments/Index';
-import CreateAppointment from './pages/appointments/Create';
-import EditAppointment from './pages/appointments/Edit';
-import ViewAppointment from './pages/appointments/View';
 
 const App = () => {
 
@@ -45,24 +44,23 @@ const App = () => {
                     <Route path='/login' element={<LoginForm />} />
                     <Route path='/register' element={<RegisterForm />} />
 
-                    {/* Clinic routes */}
                     {/* Doctors Routes */}
-                    <Route path="/doctors" element={<DoctorsIndex />} />
-                    <Route path="/doctors/create" element={<CreateDoctor />} />
-                    <Route path="/doctors/:id/edit" element={<EditDoctor />} />
-                    <Route path="/doctors/:id" element={<ViewDoctor />} />
+                    <Route path="/doctors" element={<Index />} />
+                    <Route path='/doctors/:id/edit' element={<DoctorEdit />} />
+                    <Route path='/doctors/create' element={<DoctorCreate />} />
+                    <Route path='/doctors/:id' element={<SingleDoctor />} />
 
                     {/* Patients Routes */}
-                    <Route path="/patients" element={<PatientsIndex />} />
-                    <Route path="/patients/create" element={<CreatePatient />} />
-                    <Route path="/patients/:id/edit" element={<EditPatient />} />
-                    <Route path="/patients/:id" element={<ViewPatient />} />
+                    <Route path="/patients" element={<PatientIndex />} />
+                    <Route path='/patients/:id/edit' element={<PatientEdit />} />
+                    <Route path='/patients/create' element={<PatientCreate />} />
+                    <Route path='/patients/:id' element={<SinglePatient />} />
 
                     {/* Appointments Routes */}
-                    <Route path="/appointments" element={<AppointmentsIndex />} />
-                    <Route path="/appointments/create" element={<CreateAppointment />} />
-                    <Route path="/appointments/:id/edit" element={<EditAppointment />} />
-                    <Route path="/appointments/:id" element={<ViewAppointment />} />
+                    <Route path="/appointments" element={<AppointmentIndex />} />
+                    <Route path='/appointments/:id/edit' element={<AppointmentEdit />} />
+                    <Route path='/appointments/create' element={<AppointmentCreate />} />
+                    <Route path='/appointments/:id' element={<SingleAppointment />} />
                 </Routes>
             </Router>
         </AuthProvider>

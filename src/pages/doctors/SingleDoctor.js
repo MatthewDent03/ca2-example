@@ -6,10 +6,10 @@ import { useAuth } from '../../utils/useAuth';
 
 
 
-const AppointmentCreate = () => {
+const SingleDoctor = () => {
     return (
-        <h1>hello this is appointments create</h1>
+        <h1>hello this is doctors index</h1>
     )
 };
 
-export default AppointmentCreate;
+export default SingleDoctor;

@@ -12,6 +12,8 @@ const Navbar = () => {
             <Link to="/doctors">Doctors</Link> |
             <Link to="/patients">Patients</Link> |
             <Link to="/appointments">Appointments</Link> |
+            <Link to="/diagnoses">Diagnoses</Link> |
+            <Link to="/prescriptions">Prescriptions</Link> |
             <Link to='/festivals'>Festivals</Link> |
             <Link to='/register'>Register</Link> |
             <Link to='/login'>Login</Link> |

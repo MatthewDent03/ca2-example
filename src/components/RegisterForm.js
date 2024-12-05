@@ -8,7 +8,8 @@ const RegisterForm = (props) => {
     const {login} = useAuth();
 
     const [form, setForm] = useState({
-        full_name: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: ''
     })
@@ -42,7 +43,9 @@ const RegisterForm = (props) => {
 
     return (
         <form>
-            <input onChange={handleChange} value={form.full_name} type='text' name='full_name' placeholder='Joe Bloggs'></input>
+            
+            <input onChange={handleChange} value={form.first_name} type='text' name='first_name' placeholder='Joe'></input>
+            <input onChange={handleChange} value={form.last_name} type='text' name='last_name' placeholder='Bloggs'></input>
             <br />
             <input onChange={handleChange} value={form.email} type='email' name='email' placeholder='joe.bloggs@email.com'></input>
             <br />

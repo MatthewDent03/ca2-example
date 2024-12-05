@@ -1,58 +1,43 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../../utils/useAuth';
 
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { Link } from 'react-router-dom';
-// import { useAuth } from '../../utils/useAuth';
-
-
-
-// const SingleDoctor = () => {
-//     return (
-//         <h1>hello this is doctors index</h1>
-//     )
-// };
-
-// export default SingleDoctor;
-
-import { useEffect, useState } from "react";
-import axios from 'axios'
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../utils/useAuth";
-
-const SingleDoctor = (props) => {
-    // No longer pulling this directly from localStorage, the context does that for us, and stores it in its state
-    const {token} = useAuth();
-
-    const [doctor, setDoctor] = useState(null)
-
+const SingleDoctor = () => {
+    const { token } = useAuth();
     const { id } = useParams();
+    const [doctor, setDoctor] = useState(null);
 
     useEffect(() => {
+        if (!id) return;
+
+        console.log('Fetching doctor with ID:', id);
+        console.log('Using token:', token); 
+
         axios.get(`https://fed-medical-clinic-api.vercel.app/doctors/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-            .then((res) => {
-                console.log(res)
-                setDoctor(res.data)
-            })
-            .catch((err) => {
-                console.error(err)
-            })
-    }, [])
+        .then((res) => {
+            console.log('Doctor data:', res.data);
+            setDoctor(res.data);
+        })
+        .catch((err) => {
+            console.error('Error fetching doctor:', err);
+        });
+    }, [id, token]);
 
-    return doctor && (
+    if (!doctor) return 'Loading...';
+
+    return (
         <div>
-            <Link to={`edit`}>
-                Edit doctor
-            </Link>
-            <h1>{doctor.first_name}{doctor.last_name}</h1>
-            <h2>{doctor.specialisation}</h2>
-            <p>{doctor.email} / {doctor.phone}</p>
+            <Link to={`/doctors/${id}/edit`}>Edit doctor</Link>
+            <h1>{doctor.first_name}</h1>
+            <h2>{doctor.last_name}</h2>
+            <p>{doctor.specialisation}</p>
         </div>
-    )
-}
+    );
+};
 
 export default SingleDoctor;

@@ -1,3 +1,58 @@
+// import axios from 'axios';
+// import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { useAuth } from '../utils/useAuth';
+
+// const LoginForm = () => {
+//     const navigate = useNavigate();
+//     const { login } = useAuth();
+
+//     const [form, setForm] = useState({
+//         email: '',
+//         password: ''
+//     });
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+
+//         try {
+//             await login(form.email, form.password);
+//             navigate('/'); // Navigate only after login is successful
+//         } catch (err) {
+//             console.error('Login failed:', err);
+//             alert('Login failed, please check your credentials');
+//         }
+//     };
+
+//     const handleChange = (e) => {
+//         setForm({
+//             ...form,
+//             [e.target.name]: e.target.value
+//         });
+//     };
+
+//     return (
+//         <form onSubmit={handleSubmit}>
+//             <input
+//                 onChange={handleChange}
+//                 value={form.email}
+//                 type='email'
+//                 name='email'
+//                 placeholder='joe.bloggs@email.com'
+//             />
+//             <input
+//                 onChange={handleChange}
+//                 value={form.password}
+//                 type='password'
+//                 name='password'
+//             />
+//             <button type='submit'>Submit</button>
+//         </form>
+//     );
+// };
+
+// export default LoginForm;
+
 import axios from 'axios'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';

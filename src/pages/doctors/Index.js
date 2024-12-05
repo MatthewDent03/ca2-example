@@ -1,101 +1,76 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../utils/useAuth';
 
-const DoctorsContainer = ({children}) => {
-    return (
-        <div style={{
-            margin: 'auto',
-            width: '1200px'
-        }}>
-            {children}
-        </div>
-    )
-}
+const DoctorsContainer = ({ children }) => (
+    <div style={{ margin: 'auto', width: '1200px' }}>
+        {children}
+    </div>
+);
 
 const Index = () => {
-//     return (
-//         <h1>hello this is doctors index</h1>
-//     )
-// };
-
     const [doctors, setDoctors] = useState(null);
-
-    const {token} = useAuth();
+    const { token } = useAuth();
 
     useEffect(() => {
         axios.get('https://fed-medical-clinic-api.vercel.app/doctors')
             .then(response => {
-                console.log(response.data);
+                console.log('Doctors data:', response.data);
                 setDoctors(response.data);
             })
             .catch(err => {
-                console.log(err);
+                console.error('Error fetching doctors:', err);
             });
     }, []);
 
     const handleDelete = (id) => {
         if (!token) {
-            alert('Unauthorised! Login to delete')
+            alert('Unauthorized! Login to delete');
             return;
         }
+
+        console.log('Attempting to delete doctor with ID:', id); // Debugging log for ID
 
         axios.delete(`https://fed-medical-clinic-api.vercel.app/doctors/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }).then((res) => {
-            console.log(res);
-
-            // Deleting succeeded, but has only updated festival in the DB
-            // It won't update the state by itself. We'll handle that here, so the UI reflects the change
-            // Again recall that state is *immutable* - we aren't modifying the original array (which is not allowed)
-            // Filter is returning an entirely *new* array with an element filtered out
-            setDoctors(doctors.filter((doctor) => {
-                return doctor._id != id;
-            }))
-
-        }).catch((err) => {
-            console.error(err)
         })
-    }
+        .then((res) => {
+            console.log('Deletion response:', res);
 
-    if (!doctors) return 'Loading...'
+            // Updating state to reflect deletion
+            setDoctors(doctors.filter((doctor) => doctor.id !== id)); // Use doctor.id here if the API returns 'id'
+        }).catch((err) => {
+            console.error('Deletion error:', err);
+        });
+    };
+
+    if (!doctors) return 'Loading...';
 
     return (
         <DoctorsContainer>
-            
-            <Link to='/doctors/Create'>Create</Link>
-            {/* // Object destructuring */}
-            {doctors.map(({ _id, first_name, last_name, email, phone, specialisation }) => {
-                // equivalent to: doctors.title, doctors.city
-                // pulling attributes out of the object (you can do this with arrays too)
-                return (
-                    <div>
-                        <Link to={`/doctors/${_id}`}>
-                            <h1>{first_name}{last_name}</h1>
-                        </Link>
-
-                        <h2>{specialisation}</h2>
-                        <p>{email} / {phone}</p>
-
-                        <button onClick={() => {
-                            const confirmDelete = window.confirm('are you sure?')
-
-                            if (confirmDelete) {
-                                handleDelete(_id)
-                            }
-                        }}>
-                            Delete 🗑️
-                        </button>
-                    </div>
-                )
-            })}
+            <Link to='/doctors/create'>Create</Link>
+            {doctors.map(({ id, first_name, last_name, email, phone, specialisation }) => ( // Use 'id' here if the API returns 'id'
+                <div key={id}>
+                    <Link to={`/doctors/${id}`}> {/* Use 'id' here if the API returns 'id' */}
+                        <h1>{first_name} {last_name}</h1>
+                    </Link>
+                    <h2>{specialisation}</h2>
+                    <p>{email} / {phone}</p>
+                    <button onClick={() => {
+                        const confirmDelete = window.confirm('Are you sure?');
+                        if (confirmDelete) {
+                            handleDelete(id); // Use 'id' here if the API returns 'id'
+                        }
+                    }}>
+                        Delete 🗑️
+                    </button>
+                </div>
+            ))}
         </DoctorsContainer>
-    )
+    );
 };
 
 export default Index;
-

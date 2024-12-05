@@ -1,93 +1,83 @@
-
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import { Link } from 'react-router-dom';
-// import { useAuth } from '../../utils/useAuth';
-
-
-
-// const DoctorCreate = () => {
-//     return (
-//         <h1>hello this is doctors create</h1>
-//     )
-// };
-
-// export default DoctorCreate;
-
-import { useEffect, useState } from "react"
-import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
+import { useForm } from '@mantine/form';
+import { TextInput, Select, Text, Button } from "@mantine/core";
 
-const DoctorCreate = () => {
-const { token } = useAuth();
-console.log("Token:", token);  // Ensure token is not null/undefined
-
+const Create = () => {
+    const { token } = useAuth();
     const navigate = useNavigate();
 
-    const [form, setForm] = useState({
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone: '',
-        specialisation: ''
-    })
+    const form = useForm({
+        initialValues: {
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
+            specialisation: 'General Practitioner'
+        },
+        validate: {
+            first_name: (value) => value.length > 2 && value.length < 255 ? null : 'First name must be between 2 and 255 characters',
+            last_name: (value) => value.length > 2 && value.length < 255 ? null : 'Last name must be between 2 and 255 characters',
+            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+            phone: (value) => value.length === 10 ? null : 'Phone number must be 10 digits'
+        },
+    });
 
     const handleSubmit = () => {
-        axios.post(`https://fed-medical-clinic-api.vercel.app/doctors`, form, {
+        axios.post(`https://fed-medical-clinic-api.vercel.app/doctors`, form.values, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-            .then((res) => {
-                console.log(res.data)
-                // We treat navigating routes like navigating a file system
-                // We've got to go up one level using '../' to get back to /festivals/{id} from here
-                // (we're currently at /festivals/create)                
-                navigate(`../${res.data._id}`, { relative: 'path' })
-            })
-            .catch((err) => {
-                console.error(err)
-            })
-    }
+        .then((res) => {
+            console.log(res.data);
+            navigate(`../${res.data.id}`, { relative: 'path' });
+        })
+        .catch((err) => {
+            console.error(err);
+            if (err.response.status === 422) {
+                let errors = err.response.data.error.issues;
+                form.setErrors(Object.fromEntries(errors.map((error) => [error.path[0], error.message])));
+            }
+            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.email') {
+                console.log('Saw a unique constraint error');
+                form.setFieldError('email', 'Email must be unique.');
+            }
+            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.phone') {
+                form.setFieldError('phone', 'Phone number must be unique.');
+            }
+        });
+    };
 
-    const handleChange = (e) => {
-        setForm(({
-            ...form,
-            [e.target.name]: e.target.value
-        }))
-    }
-
+    const specialisations = [
+        'Podiatrist',
+        'Dermatologist',
+        'Pediatrician',
+        'Psychiatrist',
+        'General Practitioner',
+    ];
 
     return (
         <div>
-            <h1>Create a doctor</h1>
-            <div>
-                <input type='text' placeholder='first name' name='first_name' value={form.first_name} onChange={handleChange} />
-
-                <input type='text' placeholder='last name' name='last_name' value={form.last_name} onChange={handleChange} />
-
-                <input type='text' placeholder='email' name='email' value={form.email} onChange={handleChange} />
-
-                <input type='text' placeholder='phone' name='phone' value={form.phone} onChange={handleChange} />
-
-                <select name='specialisation' onChange={handleChange}>
-                    <option value='Podiatrist'>Podiatrist</option>
-                    <option value="Dermatologist">Dermatologist</option>
-                    <option value="General Practitioner">General Practitioner</option>
-                    <option value='Pediatrician'>Pediatrician</option>
-                    <option value='Psychiatrist'>Psychiatrist</option>
-                </select>
-
-
-
-
-
-                <button onClick={handleSubmit}>Submit</button>
-
-            </div>
+            <Text size={24} mb={5}>Create a doctor</Text>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+                <TextInput withAsterisk label={'First name'} name='first_name' {...form.getInputProps('first_name')} />
+                <TextInput withAsterisk label='Last name' name='last_name' {...form.getInputProps('last_name')} />
+                <Select
+                    withAsterisk
+                    name='specialisation'
+                    label="Specialisation"
+                    placeholder="Pick one"
+                    data={specialisations.map(specialisation => ({ value: specialisation, label: specialisation }))}
+                    {...form.getInputProps('specialisation')}
+                />
+                <TextInput label={'Email'} withAsterisk name='email' {...form.getInputProps('email')} />
+                <TextInput label={'Phone'} name='phone' withAsterisk {...form.getInputProps('phone')} />
+                <Button mt={10} type={'submit'}>Submit</Button>
+            </form>
         </div>
-    )
-}
+    );
+};
 
-export default DoctorCreate;
+export default Create;

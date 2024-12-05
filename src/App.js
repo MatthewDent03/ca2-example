@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -48,12 +49,9 @@ export const Container = ({ children }) => (
 
 const App = () => {
     return (
-        <div>
+        <MantineProvider>
             <AuthProvider>
-                <UserContext.Provider value={{
-                    username: 'Joe Bloggs',
-                    email: 'joe.bloggs@email.com'
-                }}>
+                <UserContext.Provider value={{ username: 'Joe Bloggs', email: 'joe.bloggs@email.com' }}>
                     <Router>
                         <Navbar />
                         <Routes>
@@ -102,7 +100,7 @@ const App = () => {
                     </Router>
                 </UserContext.Provider>
             </AuthProvider>
-        </div>
+        </MantineProvider>
     );
 };
 

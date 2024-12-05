@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
-import { TextInput, Select, Text, Button } from "@mantine/core";
+import { TextInput, Text, Button } from "@mantine/core";
 
 const Create = () => {
     const { token } = useAuth();
@@ -30,24 +30,27 @@ const Create = () => {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then((res) => {
-            console.log(res.data);
-            navigate(`../${res.data.id}`, { relative: 'path' });
-        })
-        .catch((err) => {
-            console.error(err);
-            if (err.response.status === 422) {
-                let errors = err.response.data.error.issues;
-                form.setErrors(Object.fromEntries(errors.map((error) => [error.path[0], error.message])));
-            }
-            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.email') {
-                console.log('Saw a unique constraint error');
-                form.setFieldError('email', 'Email must be unique.');
-            }
-            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.phone') {
-                form.setFieldError('phone', 'Phone number must be unique.');
-            }
-        });
+            .then((res) => {
+                console.log(res.data);
+                navigate(`../${res.data.id}`, { relative: 'path' });
+            })
+            .catch((err) => {
+                console.error(err);
+
+                if (err.response.status === 422) {
+                    let errors = err.response.data.error.issues;
+                    form.setErrors(Object.fromEntries(errors.map((error) => [error.path[0], error.message])));
+                }
+
+                if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.email') {
+                    console.log('Saw a unique constraint error');
+                    form.setFieldError('email', 'Email must be unique.');
+                }
+
+                if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.phone') {
+                    form.setFieldError('phone', 'Phone number must be unique.');
+                }
+            });
     };
 
     const specialisations = [
@@ -64,14 +67,16 @@ const Create = () => {
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput withAsterisk label={'First name'} name='first_name' {...form.getInputProps('first_name')} />
                 <TextInput withAsterisk label='Last name' name='last_name' {...form.getInputProps('last_name')} />
-                <Select
-                    withAsterisk
-                    name='specialisation'
-                    label="Specialisation"
-                    placeholder="Pick one"
-                    data={specialisations.map(specialisation => ({ value: specialisation, label: specialisation }))}
-                    {...form.getInputProps('specialisation')}
-                />
+
+                <label> 
+                    Specialisation <br></br>
+                    <select name="specialisation" {...form.getInputProps('specialisation')}> 
+                        {specialisations.map((specialisation) => (
+                            <option key={specialisation} value={specialisation}>{specialisation}</option>
+                        ))}
+                    </select>
+                </label>
+
                 <TextInput label={'Email'} withAsterisk name='email' {...form.getInputProps('email')} />
                 <TextInput label={'Phone'} name='phone' withAsterisk {...form.getInputProps('phone')} />
                 <Button mt={10} type={'submit'}>Submit</Button>

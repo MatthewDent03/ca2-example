@@ -28,6 +28,14 @@ const SingleDiagnoses = () => {
         });
     }, [id, token]);
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
+
     if (!diagnoses) return 'Loading...';
 
     return (
@@ -35,7 +43,7 @@ const SingleDiagnoses = () => {
             <Link to={`/diagnoses/${id}/edit`}>Edit diagnoses</Link>
             <h1>Patient ID: {diagnoses.patient_id}</h1>
             <h2>Condition: {diagnoses.condition}</h2>
-            <p>Diagnoses Date: {diagnoses.diagnosis_date}</p>
+            <p>Diagnosis Date: {formatDate(diagnoses.diagnosis_date)}</p>
         </div>
     );
 };

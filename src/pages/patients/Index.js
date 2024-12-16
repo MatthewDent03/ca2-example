@@ -53,12 +53,11 @@ const PatientIndex = () => {
     return (
         <PatientsController>
             <Link to='/patients/create'>Create</Link>
-            {patients.map(({ id, first_name, last_name, email, phone, specialisation }) => ( // Use 'id' here if the API returns 'id'
+            {patients.map(({ id, first_name, last_name, email, phone}) => ( // Use 'id' here if the API returns 'id'
                 <div key={id}>
                     <Link to={`/patients/${id}`}> {/* Use 'id' here if the API returns 'id' */}
                         <h1>{first_name} {last_name}</h1>
                     </Link>
-                    <h2>{specialisation}</h2>
                     <p>{email} / {phone}</p>
                     <button onClick={() => {
                         const confirmDelete = window.confirm('Are you sure?');

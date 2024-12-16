@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/prescriptions.scss'; // Import your custom SCSS file
 
 const PrescriptionEdit = () => {
     const { token } = useAuth();
@@ -74,7 +75,7 @@ const PrescriptionEdit = () => {
             navigate(`/prescriptions/${id}`, { relative: 'path', replace: true });
         })
         .catch((err) => {
-            console.error('Error updating prescriptions:', err);
+            console.error('Error updating prescription:', err);
         });
     };
 
@@ -101,68 +102,89 @@ const PrescriptionEdit = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Edit Doctor</Text>
-            <form onSubmit={handleSubmit}>
-                <TextInput
-                    withAsterisk
-                    label={'Patient ID'}
-                    name='patient_id'
-                    value={form.patient_id}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Doctor ID'}
-                    name='doctor_id'
-                    value={form.doctor_id}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Diagnosis ID'}
-                    name='diagnosis_id'
-                    value={form.diagnosis_id}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Medication'}
-                    name='medication'
-                    value={form.medication}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Dosage'}
-                    name='dosage'
-                    value={form.dosage}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Start Date'}
-                    name='start_date'
-                    value={form.start_date}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'End Date'}
-                    name='end_date'
-                    value={form.end_date}
-                    onChange={handleChange}
-                />
-                <Button mt={10} type={'submit'}>Submit</Button>
+        <div className="edit-prescription-container container py-4">
+            <Text size={24} mb={5} className="text-primary">Edit Prescription</Text>
+            <form className="prescription-form" onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                    <label>Patient ID</label>
+                    <TextInput
+                        withAsterisk
+                        name="patient_id"
+                        value={form.patient_id}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Doctor ID</label>
+                    <TextInput
+                        withAsterisk
+                        name="doctor_id"
+                        value={form.doctor_id}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Diagnosis ID</label>
+                    <TextInput
+                        withAsterisk
+                        name="diagnosis_id"
+                        value={form.diagnosis_id}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Medication</label>
+                    <TextInput
+                        withAsterisk
+                        name="medication"
+                        value={form.medication}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Dosage</label>
+                    <TextInput
+                        withAsterisk
+                        name="dosage"
+                        value={form.dosage}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Start Date</label>
+                    <TextInput
+                        withAsterisk
+                        name="start_date"
+                        value={form.start_date}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>End Date</label>
+                    <TextInput
+                        withAsterisk
+                        name="end_date"
+                        value={form.end_date}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <Button className="btn btn-primary me-2" type="submit">Submit</Button>
+                <Button className="btn btn-danger" onClick={() => {
+                    const confirmDelete = window.confirm('Are you sure you want to delete this prescription?');
+                    if (confirmDelete) {
+                        handleDelete();
+                    }
+                }}>
+                    Delete
+                </Button>
             </form>
-            <Button mt={10} color="red" onClick={() => {
-                const confirmDelete = window.confirm('Are you sure you want to delete this prescription?');
-                if (confirmDelete) {
-                    handleDelete();
-                }
-            }}>
-                Delete
-            </Button>
         </div>
     );
 };

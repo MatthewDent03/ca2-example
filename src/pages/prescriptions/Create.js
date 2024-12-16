@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/prescriptions.scss';
 
 const PrescriptionCreate = () => {
     const { token } = useAuth();
@@ -36,7 +37,6 @@ const PrescriptionCreate = () => {
     });
 
     const handleSubmit = () => {
-        // Convert date fields to strings before sending
         const updatedForm = {
             ...form.values,
             patient_id: parseInt(form.values.patient_id, 10),
@@ -64,17 +64,17 @@ const PrescriptionCreate = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Create a Prescription</Text>
+        <div className="prescription-form">
+            <h1>Create a Prescription</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput withAsterisk label={'Patient ID'} name='patient_id' {...form.getInputProps('patient_id')} />
-                <TextInput withAsterisk label={'Doctor ID'} name='doctor_id' {...form.getInputProps('doctor_id')} />
-                <TextInput withAsterisk label={'Diagnosis ID'} name='diagnosis_id' {...form.getInputProps('diagnosis_id')} />
-                <TextInput withAsterisk label={'Medication'} name='medication' {...form.getInputProps('medication')} />
-                <TextInput withAsterisk label={'Dosage'} name='dosage' {...form.getInputProps('dosage')} />
-                <TextInput withAsterisk label={'Start Date'} name='start_date' {...form.getInputProps('start_date')} />
-                <TextInput withAsterisk label={'End Date'} name='end_date' {...form.getInputProps('end_date')} />
-                <Button mt={10} type={'submit'}>Submit</Button>
+                <TextInput withAsterisk label="Patient ID" {...form.getInputProps('patient_id')} />
+                <TextInput withAsterisk label="Doctor ID" {...form.getInputProps('doctor_id')} />
+                <TextInput withAsterisk label="Diagnosis ID" {...form.getInputProps('diagnosis_id')} />
+                <TextInput withAsterisk label="Medication" {...form.getInputProps('medication')} />
+                <TextInput withAsterisk label="Dosage" {...form.getInputProps('dosage')} />
+                <TextInput withAsterisk label="Start Date" {...form.getInputProps('start_date')} />
+                <TextInput withAsterisk label="End Date" {...form.getInputProps('end_date')} />
+                <Button mt={10} type="submit" className="btn btn-primary mt-3">Submit</Button>
             </form>
         </div>
     );

@@ -1,5 +1,10 @@
 import { MantineProvider } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/main.scss';
+
+
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import FestivalsIndex from './pages/festivals/Index';

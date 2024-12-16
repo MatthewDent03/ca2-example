@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/doctors.scss'; // Import your custom SCSS file
 
 const Edit = () => {
     const { token } = useAuth();
@@ -86,29 +87,36 @@ const Edit = () => {
     ];
 
     return (
-        <div>
-            <Text size={24} mb={5}>Edit Doctor</Text>
-            <form onSubmit={handleSubmit}>
-                <TextInput
-                    withAsterisk
-                    label={'First name'}
-                    name='first_name'
-                    value={form.first_name}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label='Last name'
-                    name='last_name'
-                    value={form.last_name}
-                    onChange={handleChange}
-                />
-                <label>
-                    Specialisation
+        <div className="edit-doctor-container container py-4">
+            <Text size={24} mb={5} className="text-primary">Edit Doctor</Text>
+            <form className="doctor-form" onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                    <label>First Name</label>
+                    <TextInput
+                        withAsterisk
+                        name="first_name"
+                        value={form.first_name}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Last Name</label>
+                    <TextInput
+                        withAsterisk
+                        name="last_name"
+                        value={form.last_name}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Specialisation</label>
                     <select
                         name="specialisation"
                         value={form.specialisation}
                         onChange={handleChange}
+                        className="form-select"
                     >
                         {specialisations.map((specialisation) => (
                             <option key={specialisation} value={specialisation}>
@@ -116,31 +124,37 @@ const Edit = () => {
                             </option>
                         ))}
                     </select>
-                </label>
-                <TextInput
-                    withAsterisk
-                    label={'Email'}
-                    name='email'
-                    value={form.email}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Phone'}
-                    name='phone'
-                    value={form.phone}
-                    onChange={handleChange}
-                />
-                <Button mt={10} type={'submit'}>Submit</Button>
+                </div>
+                <div className="form-group mb-3">
+                    <label>Email</label>
+                    <TextInput
+                        withAsterisk
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Phone</label>
+                    <TextInput
+                        withAsterisk
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <Button className="btn btn-primary me-2" type="submit">Submit</Button>
+                <Button className="btn btn-danger" onClick={() => {
+                    const confirmDelete = window.confirm('Are you sure you want to delete this doctor?');
+                    if (confirmDelete) {
+                        handleDelete();
+                    }
+                }}>
+                    Delete
+                </Button>
             </form>
-            <Button mt={10} color="red" onClick={() => {
-                const confirmDelete = window.confirm('Are you sure you want to delete this doctor?');
-                if (confirmDelete) {
-                    handleDelete();
-                }
-            }}>
-                Delete
-            </Button>
         </div>
     );
 };

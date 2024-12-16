@@ -3,86 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/doctors.scss';
 
 const Create = () => {
-    const { token } = useAuth();
-    const navigate = useNavigate();
+  const { token } = useAuth();
+  const navigate = useNavigate();
 
-    const form = useForm({
-        initialValues: {
-            first_name: '',
-            last_name: '',
-            email: '',
-            phone: '',
-            specialisation: 'General Practitioner'
-        },
-        validate: {
-            first_name: (value) => value.length > 2 && value.length < 255 ? null : 'First name must be between 2 and 255 characters',
-            last_name: (value) => value.length > 2 && value.length < 255 ? null : 'Last name must be between 2 and 255 characters',
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            phone: (value) => value.length === 10 ? null : 'Phone number must be 10 digits'
-        },
-    });
+  const form = useForm({
+    initialValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      specialisation: 'General Practitioner'
+    },
+    validate: {
+      first_name: value => value.length >= 2 ? null : 'First name too short',
+      last_name: value => value.length >= 2 ? null : 'Last name too short',
+      email: value => /^\S+@\S+$/.test(value) ? null : 'Invalid email',
+      phone: value => value.length === 10 ? null : 'Phone must be 10 digits'
+    }
+  });
 
-    const handleSubmit = () => {
-        axios.post(`https://fed-medical-clinic-api.vercel.app/doctors`, form.values, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-            .then((res) => {
-                console.log(res.data);
-                navigate(`../${res.data.id}`, { relative: 'path' });
-            })
-            .catch((err) => {
-                console.error(err);
+  const handleSubmit = () => {
+    axios.post('https://fed-medical-clinic-api.vercel.app/doctors', form.values, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => navigate(`../doctors`));
+  };
 
-                if (err.response.status === 422) {
-                    let errors = err.response.data.error.issues;
-                    form.setErrors(Object.fromEntries(errors.map((error) => [error.path[0], error.message])));
-                }
+  const specialisations = ['Podiatrist', 'Dermatologist', 'Pediatrician', 'Psychiatrist', 'General Practitioner'];
 
-                if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.email') {
-                    console.log('Saw a unique constraint error');
-                    form.setFieldError('email', 'Email must be unique.');
-                }
-
-                if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.phone') {
-                    form.setFieldError('phone', 'Phone number must be unique.');
-                }
-            });
-    };
-
-    const specialisations = [
-        'Podiatrist',
-        'Dermatologist',
-        'Pediatrician',
-        'Psychiatrist',
-        'General Practitioner',
-    ];
-
-    return (
-        <div>
-            <Text size={24} mb={5}>Create a doctor</Text>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput withAsterisk label={'First name'} name='first_name' {...form.getInputProps('first_name')} />
-                <TextInput withAsterisk label='Last name' name='last_name' {...form.getInputProps('last_name')} />
-
-                <label> 
-                    Specialisation <br></br>
-                    <select name="specialisation" {...form.getInputProps('specialisation')}> 
-                        {specialisations.map((specialisation) => (
-                            <option key={specialisation} value={specialisation}>{specialisation}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <TextInput label={'Email'} withAsterisk name='email' {...form.getInputProps('email')} />
-                <TextInput label={'Phone'} name='phone' withAsterisk {...form.getInputProps('phone')} />
-                <Button mt={10} type={'submit'}>Submit</Button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="doctor-form">
+      <h1>Create a Doctor</h1>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <TextInput withAsterisk label="First Name" {...form.getInputProps('first_name')} />
+        <TextInput withAsterisk label="Last Name" {...form.getInputProps('last_name')} />
+        <label>Specialisation</label>
+        <select className="form-select" {...form.getInputProps('specialisation')}>
+          {specialisations.map(spec => <option key={spec} value={spec}>{spec}</option>)}
+        </select>
+        <TextInput withAsterisk label="Email" {...form.getInputProps('email')} />
+        <TextInput withAsterisk label="Phone" {...form.getInputProps('phone')} />
+        <Button type="submit" className="btn btn-primary mt-3">Submit</Button>
+      </form>
+    </div>
+  );
 };
+
 
 export default Create;

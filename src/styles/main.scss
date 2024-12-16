@@ -1,0 +1,15 @@
+// src/styles/main.scss
+
+// 1. Override Bootstrap variables
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+// Custom variable overrides
+$primary: #3498db; // Change the primary color
+$font-size-base: 1rem;
+
+// 2. Import Bootstrap styles
+@import "node_modules/bootstrap/scss/bootstrap";
+
+// 3. Import custom styles
+@import './form'; // Make sure '_form.scss' exists in the same folder

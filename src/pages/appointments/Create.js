@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/appointments.scss'; // Make sure this SCSS file exists
 
 const AppointmentCreate = () => {
     const { token } = useAuth();
@@ -25,22 +26,16 @@ const AppointmentCreate = () => {
     });
 
     const handleSubmit = () => {
-        // Convert doctor_id and patient_id to numbers before sending
         const updatedForm = {
             ...form.values,
-            doctor_id: parseInt(form.values.doctor_id),
-            patient_id: parseInt(form.values.patient_id)
+            doctor_id: parseInt(form.values.doctor_id, 10),
+            patient_id: parseInt(form.values.patient_id, 10)
         };
 
-        axios.post(`https://fed-medical-clinic-api.vercel.app/appointments`, updatedForm, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+        axios.post('https://fed-medical-clinic-api.vercel.app/appointments', updatedForm, {
+            headers: { Authorization: `Bearer ${token}` }
         })
-        .then((res) => {
-            console.log(res.data);
-            navigate(`../${res.data.id}`, { relative: 'path' });
-        })
+        .then(res => navigate(`../appointments`))
         .catch((err) => {
             console.error(err);
 
@@ -48,26 +43,17 @@ const AppointmentCreate = () => {
                 let errors = err.response.data.error.issues;
                 form.setErrors(Object.fromEntries(errors.map((error) => [error.path[0], error.message])));
             }
-
-            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.email') {
-                console.log('Saw a unique constraint error');
-                form.setFieldError('email', 'Email must be unique.');
-            }
-
-            if (err.response.data.message === 'SQLITE_CONSTRAINT: SQLite error: UNIQUE constraint failed: doctors.phone') {
-                form.setFieldError('phone', 'Phone number must be unique.');
-            }
         });
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Create an Appointment</Text>
+        <div className="appointment-form">
+            <h1>Create an Appointment</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput withAsterisk label={'Appointment Date'} name='appointment_date' {...form.getInputProps('appointment_date')} />
-                <TextInput withAsterisk label='Doctor ID' name='doctor_id' {...form.getInputProps('doctor_id')} />
-                <TextInput withAsterisk label='Patient ID' name='patient_id' {...form.getInputProps('patient_id')} />
-                <Button mt={10} type={'submit'}>Submit</Button>
+                <TextInput withAsterisk label="Appointment Date" {...form.getInputProps('appointment_date')} />
+                <TextInput withAsterisk label="Doctor ID" {...form.getInputProps('doctor_id')} />
+                <TextInput withAsterisk label="Patient ID" {...form.getInputProps('patient_id')} />
+                <Button type="submit" className="btn btn-primary mt-3">Submit</Button>
             </form>
         </div>
     );

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/diagnoses.scss'; // Import your custom SCSS file
 
 const DiagnosesCreate = () => {
     const { token } = useAuth();
@@ -52,13 +53,13 @@ const DiagnosesCreate = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Create a diagnoses</Text>
+        <div className="diagnosis-form">
+            <h1>Create a Diagnosis</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput withAsterisk label={'Patient ID'} name='patient_id' {...form.getInputProps('patient_id')} />
-                <TextInput withAsterisk label='Condition' name='condition' {...form.getInputProps('condition')} />
-                <TextInput withAsterisk label='Diagnoses Date' name='diagnosis_date' {...form.getInputProps('diagnosis_date')} />
-                <Button mt={10} type={'submit'}>Submit</Button>
+                <TextInput withAsterisk label="Patient ID" {...form.getInputProps('patient_id')} />
+                <TextInput withAsterisk label="Condition" {...form.getInputProps('condition')} />
+                <TextInput withAsterisk label="Diagnosis Date" {...form.getInputProps('diagnosis_date')} />
+                <Button mt={10} type="submit" className="btn btn-primary mt-3">Submit</Button>
             </form>
         </div>
     );

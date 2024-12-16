@@ -2,41 +2,65 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../utils/useAuth';
+import '../../styles/patients.scss';
 
 const SinglePatient = () => {
     const { token } = useAuth();
     const { id } = useParams();
     const [patient, setPatient] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!id) return;
-
-        console.log('Fetching patient with ID:', id);
-        console.log('Using token:', token); 
-
-        axios.get(`https://fed-medical-clinic-api.vercel.app/patients/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then((res) => {
-            console.log('Patient data:', res.data);
-            setPatient(res.data);
-        })
-        .catch((err) => {
-            console.error('Error fetching patient:', err);
-        });
+        axios
+            .get(`https://fed-medical-clinic-api.vercel.app/patients/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((res) => setPatient(res.data))
+            .catch((err) => {
+                console.error('Error fetching patient:', err);
+                setError('Failed to load patient details.');
+            });
     }, [id, token]);
 
-    if (!patient) return 'Loading...';
+    if (error) {
+        return <p className="error-text">{error}</p>;
+    }
+
+    if (!patient) {
+        return <p>Loading patient details...</p>;
+    }
 
     return (
-        <div>
-            <Link to={`/patients/${id}/edit`}>Edit patient</Link>
-            <h1>{patient.first_name} {patient.last_name}</h1>
-            <h2>Email/Number: {patient.email} / {patient.phone}</h2>
-            <h2>address: {patient.address}</h2>
-            <h2>DoB: {patient.date_of_birth}</h2>
+        <div className="patient-detail-container container py-4">
+            <div className="card shadow p-4">
+                <div className="card-header text-center">
+                    <h1 className="text-primary">
+                        {patient.first_name} {patient.last_name}
+                    </h1>
+                </div>
+                <div className="card-body">
+                    <p>
+                        <strong>Email:</strong> {patient.email}
+                    </p>
+                    <p>
+                        <strong>Phone:</strong> {patient.phone}
+                    </p>
+                    <p>
+                        <strong>Address:</strong> {patient.address}
+                    </p>
+                    <p>
+                        <strong>Date of Birth:</strong> {patient.date_of_birth}
+                    </p>
+                    <div className="action-buttons mt-4">
+                        <Link to={`/patients/${id}/edit`} className="btn btn-primary me-2">
+                            Edit Patient
+                        </Link>
+                        <Link to="/patients" className="btn btn-secondary">
+                            Back to Patients
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

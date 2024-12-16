@@ -1,0 +1,41 @@
+$nav-bg-color: #3498db;
+$nav-text-color: white;
+$nav-hover-bg-color: #2980b9;
+$nav-hover-text-color: white;
+
+.navbar {
+  background-color: $nav-bg-color;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  .nav-link {
+    color: $nav-text-color;
+    text-decoration: none;
+    margin: 0 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px; // Add rounded corners
+
+    &:hover {
+      background-color: $nav-hover-bg-color;
+      color: $nav-hover-text-color;
+    }
+  }
+
+  .logout-button {
+    background-color: transparent;
+    color: $nav-text-color;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px; // Add rounded corners
+
+    &:hover {
+      background-color: $nav-hover-bg-color;
+      color: $nav-hover-text-color;
+    }
+  }
+}

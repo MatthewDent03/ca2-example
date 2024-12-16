@@ -13,3 +13,26 @@ $font-size-base: 1rem;
 
 // 3. Import custom styles
 @import './form'; // Make sure '_form.scss' exists in the same folder
+
+@keyframes smokeFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(270deg, #1c1c1c, #595959, #1c1c1c, #595959);
+    background-size: 400% 400%;
+    animation: smokeFlow 10s ease infinite;
+    font-family: 'Arial', sans-serif;
+  }
+  

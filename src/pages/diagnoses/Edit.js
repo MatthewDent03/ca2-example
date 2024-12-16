@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { TextInput, Text, Button } from "@mantine/core";
+import '../../styles/diagnoses.scss'; // Import your custom SCSS file
 
 const DiagnosesEdit = () => {
     const { token } = useAuth();
@@ -15,18 +16,17 @@ const DiagnosesEdit = () => {
     });
 
     useEffect(() => {
-        console.log('Fetching diagnoses with ID:', id);
         axios.get(`https://fed-medical-clinic-api.vercel.app/diagnoses/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
         .then((res) => {
-            console.log('diagnoses data:', res.data);
+            console.log('Diagnosis data:', res.data);
             setForm(res.data);
         })
         .catch((err) => {
-            console.error('Error fetching diagnoses:', err);
+            console.error('Error fetching diagnosis:', err);
         });
     }, [id, token]);
 
@@ -40,14 +40,11 @@ const DiagnosesEdit = () => {
         console.log('Submitting form with ID:', id);
         console.log('Form data:', form);
 
-        // Convert diagnosis_date to the correct format and patient_id to number if needed
         const updatedForm = {
             ...form,
             diagnosis_date: new Date(form.diagnosis_date).toISOString().split('T')[0], // Assuming the server expects YYYY-MM-DD format
             patient_id: parseInt(form.patient_id, 10)
         };
-
-        console.log('Updated form data:', updatedForm);
 
         axios.patch(`https://fed-medical-clinic-api.vercel.app/diagnoses/${id}`, updatedForm, {
             headers: {
@@ -69,8 +66,6 @@ const DiagnosesEdit = () => {
             return;
         }
 
-        console.log('Attempting to delete diagnoses with ID:', id);
-
         axios.delete(`https://fed-medical-clinic-api.vercel.app/diagnoses/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -86,40 +81,49 @@ const DiagnosesEdit = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Edit Diagnoses</Text>
-            <form onSubmit={handleSubmit}>
-                <TextInput
-                    withAsterisk
-                    label={'Patient ID'}
-                    name='patient_id'
-                    value={form.patient_id}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label='Condition'
-                    name='condition'
-                    value={form.condition}
-                    onChange={handleChange}
-                />
-                <TextInput
-                    withAsterisk
-                    label={'Diagnosis Date'}
-                    name='diagnosis_date'
-                    value={form.diagnosis_date}
-                    onChange={handleChange}
-                />
-                <Button mt={10} type={'submit'}>Submit</Button>
+        <div className="edit-diagnosis-container container py-4">
+            <Text size={24} mb={5} className="text-primary">Edit Diagnosis</Text>
+            <form className="diagnosis-form" onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                    <label>Patient ID</label>
+                    <TextInput
+                        withAsterisk
+                        name="patient_id"
+                        value={form.patient_id}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Condition</label>
+                    <TextInput
+                        withAsterisk
+                        name="condition"
+                        value={form.condition}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <div className="form-group mb-3">
+                    <label>Diagnosis Date</label>
+                    <TextInput
+                        withAsterisk
+                        name="diagnosis_date"
+                        value={form.diagnosis_date}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                </div>
+                <Button className="btn btn-primary me-2" type="submit">Submit</Button>
+                <Button className="btn btn-danger" onClick={() => {
+                    const confirmDelete = window.confirm('Are you sure you want to delete this diagnosis?');
+                    if (confirmDelete) {
+                        handleDelete();
+                    }
+                }}>
+                    Delete
+                </Button>
             </form>
-            <Button mt={10} color="red" onClick={() => {
-                const confirmDelete = window.confirm('Are you sure you want to delete this diagnoses?');
-                if (confirmDelete) {
-                    handleDelete();
-                }
-            }}>
-                Delete
-            </Button>
         </div>
     );
 };

@@ -2,29 +2,26 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../utils/useAuth';
+import '../../styles/diagnoses.scss';
 
 const SingleDiagnoses = () => {
     const { token } = useAuth();
     const { id } = useParams();
-    const [diagnoses, setDiagnoses] = useState(null);
+    const [diagnosis, setDiagnosis] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!id) return;
-
-        console.log('Fetching diagnoses with ID:', id);
-        console.log('Using token:', token); 
 
         axios.get(`https://fed-medical-clinic-api.vercel.app/diagnoses/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then((res) => {
-            console.log('Diagnoses data:', res.data);
-            setDiagnoses(res.data);
-        })
+        .then((res) => setDiagnosis(res.data))
         .catch((err) => {
-            console.error('Error fetching diagnoses:', err);
+            console.error('Error fetching diagnosis:', err);
+            setError('Failed to load diagnosis details.');
         });
     }, [id, token]);
 
@@ -36,16 +33,41 @@ const SingleDiagnoses = () => {
         return `${day}-${month}-${year}`;
     };
 
-    if (!diagnoses) return 'Loading...';
+    if (error) {
+        return <p className="error-text">{error}</p>;
+    }
+
+    if (!diagnosis) {
+        return <p>Loading diagnosis details...</p>;
+    }
 
     return (
-        <div>
-            <Link to={`/diagnoses/${id}/edit`}>Edit diagnoses</Link>
-            <h1>Patient ID: {diagnoses.patient_id}</h1>
-            <h2>Condition: {diagnoses.condition}</h2>
-            <p>Diagnosis Date: {formatDate(diagnoses.diagnosis_date)}</p>
+        <div className="diagnosis-detail-container container py-4">
+            <div className="card shadow p-4">
+                <div className="card-header text-center">
+                    <h1 className="text-primary">
+                        Patient ID: {diagnosis.patient_id}
+                    </h1>
+                    <h2 className="text-secondary">
+                        Condition: {diagnosis.condition}
+                    </h2>
+                </div>
+                <div className="card-body">
+                    <p>
+                        <strong>Diagnosis Date:</strong> {formatDate(diagnosis.diagnosis_date)}
+                    </p>
+                    <div className="action-buttons mt-4">
+                        <Link to={`/diagnoses/${id}/edit`} className="btn btn-primary me-2">
+                            Edit Diagnosis
+                        </Link>
+                        <Link to="/diagnoses" className="btn btn-secondary">
+                            Back to Diagnoses
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default SingleDiagnoses;
+export default SingleDiagnoses
